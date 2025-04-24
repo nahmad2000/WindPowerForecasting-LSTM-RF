@@ -30,7 +30,8 @@ project/
 ## 🚀 Features
 
 #### Two modeling approaches:
-> **Direct**: LSTM predicts power directly
+> **Direct**: LSTM predicts power directly'
+
 > **Indirect**: LSTM predicts features → Random Forest predicts power
 
 - Rich EDA and visualization support  
