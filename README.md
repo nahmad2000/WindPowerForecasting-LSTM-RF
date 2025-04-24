@@ -29,17 +29,16 @@ project/
 
 ## 🚀 Features
 
-✅ Two modeling approaches:
+#### Two modeling approaches:
+> **Direct**: LSTM predicts power directly
+> **Indirect**: LSTM predicts features → Random Forest predicts power
 
-- **Direct**: LSTM predicts power directly
-- **Indirect**: LSTM predicts features → Random Forest predicts power
-
-✅ Rich EDA and visualization support  
-✅ Resampling, scaling, and missing value handling  
-✅ Configurable workflow via `src/config.py`  
-✅ Evaluation metrics: MAE, RMSE, R², IA, SDE, MAPE  
-✅ Modular and production-ready design
-✅ Extendable to other time-series datasets with minimal changes
+- Rich EDA and visualization support  
+- Resampling, scaling, and missing value handling  
+- Configurable workflow via `src/config.py`  
+- Evaluation metrics: MAE, RMSE, R², IA, SDE, MAPE  
+- Modular and production-ready design
+- Extendable to other time-series datasets with minimal changes
 
 ---
 
