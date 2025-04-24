@@ -1,142 +1,117 @@
-# Wind Power Forecasting using LSTM
+# Wind Power Forecasting with LSTM & Random Forest
 
-This project focuses on forecasting wind turbine power generation using time-series analysis, specifically employing an LSTM (Long Short-Term Memory) neural network.
+This project implements a **hybrid deep learning and machine learning pipeline** to forecast wind turbine power generation using LSTM networks and a two-stage LSTM → Random Forest approach. It emphasizes data preprocessing, scalable modeling, robust evaluation, and automated visualization.
 
-## Project Structure
+---
 
-The repository is organized as follows:
-
-```
-
-WindPowerForecasting/
-
-├── data/
-
-│ └── wind_turbine_data.csv # Renamed raw data (originally T1.csv)
-
-├── notebooks/
-
-│ └── 01_Data_Analysis_and_Modeling.ipynb # Main notebook for analysis & modeling
-
-├── results/
-
-│ ├── metrics_lstm_direct.csv # Performance metrics for the LSTM model
-
-│ ├── metrics_comparison.csv # Comparison metrics (if multiple models implemented)
-
-│ └── saved_models/
-
-│ └── best_lstm_direct_model.h5 # Saved trained model weights
-
-├── images/ # Saved plots from the analysis
-
-│ ├── target_timeseries.png
-
-│ ├── target_distribution.png
-
-│ ├── windspeed_distribution.png
-
-│ ├── lstm_learning_curves.png
-
-│ └── lstm_actual_vs_predicted_test.png
-
-│ └── ... (other generated plots)
-
-├── src/ # Source code modules
-
-│ ├── init.py # Makes src a Python package
-
-│ ├── config.py # Configuration parameters
-
-│ ├── data_preprocessing.py # Data loading & preprocessing functions
-
-│ ├── modeling.py # Model building & training functions
-
-│ ├── evaluation.py # Evaluation metric functions
-
-│ └── plotting.py # Plotting functions
-
-├── README.md # This file
-
-└── requirements.txt # Project dependencies
+## 📁 Project Structure
 
 ```
+project/
+├── main.py                    # Entry point: runs full forecasting pipeline
+├── requirements.txt           # Python dependencies
+├── README.md                  # Project documentation
+├── Dataset/
+│   └── wind_turbine_data.csv  # Raw wind turbine dataset
+├── src/                       # Source code modules
+│   ├── config.py              # Paths, modeling parameters, columns, etc.
+│   ├── data_preprocessing.py  # Loading, cleaning, splitting, scaling
+│   ├── modeling.py            # LSTM + Random Forest model construction & training
+│   ├── evaluation.py          # Performance metrics & scoring
+│   ├── plotting.py            # Automated visualizations (EDA, predictions, etc.)
+└── results/                   # Auto-generated outputs
+    ├── saved_models/          # Best saved LSTM / RF models
+    ├── images/                # Plots: distributions, time series, learning curves
+    └── metrics_lstm_direct.csv  # Final evaluation metrics
+```
 
-## Dataset
+---
 
-The dataset used is sourced from Kaggle ([Link to Kaggle Dataset - *replace if available*](https://www.kaggle.com/datasets/berkerisen/wind-turbine-scada-dataset)) and contains time-series data for a wind turbine, including:
-* `Date/Time`: Timestamp of the recording.
-* `LV ActivePower (kW)`: The target variable (power generated).
-* `Wind Speed (m/s)`: Measured wind speed.
-* `Theoretical_Power_Curve (KWh)`: Theoretical power output based on wind speed.
-* `Wind Direction (°)`: Wind direction.
+## 🚀 Features
 
-The raw data (`T1.csv`) should be placed in the `data/` directory and renamed to `wind_turbine_data.csv`.
+✅ Two modeling approaches:
 
-## Methodology
+- **Direct**: LSTM predicts power directly
+- **Indirect**: LSTM predicts features → Random Forest predicts power
 
-The primary approach demonstrated in the main notebook (`01_Data_Analysis_and_Modeling.ipynb`) is **Direct Forecasting using LSTM**:
+✅ Rich EDA and visualization support  
+✅ Resampling, scaling, and missing value handling  
+✅ Configurable workflow via `src/config.py`  
+✅ Evaluation metrics: MAE, RMSE, R², IA, SDE, MAPE  
+✅ Modular and production-ready design
+✅ Extendable to other time-series datasets with minimal changes
 
-1.  **Preprocessing**: The raw data is loaded, datetime index is set, data is resampled to an hourly frequency (configurable in `src/config.py`), missing values handled (ffill/bfill), and features are scaled using `MinMaxScaler`.
-2.  **Sequence Creation**: The time series data is transformed into overlapping sequences suitable for LSTM input (using past `N` hours to predict the next hour, where `N` is `SEQUENCE_LENGTH` in `config.py`).
-3.  **LSTM Modeling**: A sequential LSTM model with two LSTM layers followed by a Dense output layer is built using Keras/TensorFlow. Architecture details are in `src/modeling.py`.
-4.  **Training**: The model is trained on the training dataset and validated on a separate validation set. `ModelCheckpoint` saves the best model based on validation loss, and `EarlyStopping` prevents overfitting.
-5.  **Evaluation**: The trained model's performance is evaluated on the training, validation, and test sets using metrics like MAE, MAPE, RMSE, R2, IA, and SDE (calculated in `src/evaluation.py`).
+---
 
-*(Future work could include implementing an indirect approach, potentially using Random Forest with LSTM features).*
+## 📊 Dataset
 
-## Setup
+- **Source**: `Dataset/wind_turbine_data.csv`
+- **Columns Used**:
+    - `LV ActivePower (kW)` — target
+    - `Wind Speed (m/s)`
+    - `Theoretical_Power_Curve (KWh)`
+    - `Wind Direction (°)`
+- **Frequency**: Hourly (resampled in pipeline)
 
-1.  **Clone the repository:**
-    ```bash
-    git clone <your-repo-url>
-    cd WindPowerForecasting
-    ```
-2.  **Create a virtual environment (recommended):**
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-    ```
-3.  **Install dependencies:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-    *Note: Ensure you have the correct version of TensorFlow (`tensorflow` or `tensorflow-cpu`) installed as specified/chosen in `requirements.txt`.*
+---
 
-## Usage
+## ⚙️ Configuration
 
-1.  Ensure the raw data file (`T1.csv` from your original upload) is renamed to `wind_turbine_data.csv` and placed in the `data/` directory.
-2.  Launch Jupyter Lab or Jupyter Notebook from the **project root directory** (`WindPowerForecasting/`):
-    ```bash
-    jupyter lab
-    # or
-    jupyter notebook
-    ```
-3.  Navigate into the `notebooks/` directory within the Jupyter interface.
-4.  Open and run the `01_Data_Analysis_and_Modeling.ipynb` notebook cell by cell.
+All settings are managed in `src/config.py`, including:
 
-The notebook will execute the entire workflow, from data loading to evaluation, saving results (metrics CSVs, model file) to the `results/` directory and plots to the `images/` directory.
+- Modeling approach (`direct` or `indirect`)
+- Train/validation/test split ratios
+- LSTM hyperparameters
+- Target/feature columns
+- Output paths for logs, models, plots, and metrics
 
-## Results Highlights
+---
 
-The performance of the final LSTM model on the **test set** is summarized below (update these values after running the notebook):
+## 🧪 Running the Project
 
-| Metric      | Value   |
-|-------------|---------|
-| MAE         | [Value] |
-| MAPE (%)    | [Value] |
-| RMSE        | [Value] |
-| R2          | [Value] |
-| IA          | [Value] |
-| SDE         | [Value] |
+### 1. Install dependencies
 
-**Actual vs Predicted Power (Test Set):**
+```bash
+pip install -r requirements.txt
+```
 
-![LSTM Actual vs Predicted Test Set](images/lstm_actual_vs_predicted_test.png)
-*(This image will be generated in the `images/` folder when you run the notebook)*
+### 2. Choose The Desired Approach
+1. Go to `src\config.py`
+2. Specify the desired approach
+	1. Keep it: `APPROACH = 'direct'
+	2. Or change it to: `APPROACH = 'indirect'`
+### 3. Run the main pipeline
 
-**Learning Curves:**
+```bash
+python main.py
+```
 
-![LSTM Learning Curves](images/lstm_learning_curves.png)
-*(This image will be generated in the `images/` folder when you run the notebook)*
+All outputs (trained models, plots, logs, and CSV metrics) will be saved automatically in the `results/` directory.
 
+---
+
+### 📈 Output Examples
+
+#### 🔁 Learning Curves
+
+| Direct LSTM                                                             | Indirect LSTM                                                               |
+| ----------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| ![Direct LSTM Learning](results/images/lstm_direct_learning_curves.png) | ![Indirect LSTM Learning](results/images/lstm_indirect_learning_curves.png) |
+|                                                                         |                                                                             |
+
+#### 📉 Actual vs Predicted (Test Set)
+
+| Direct LSTM                                                                            | Indirect RF                                                                        |
+| -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| ![Direct Actual vs Predicted](results/images/lstm_direct_actual_vs_predicted_test.png) | ![RF Actual vs Predicted](results/images/rf_indirect_actual_vs_predicted_test.png) |
+
+---
+
+### 📊 Test Set Results Comparison
+
+|**Approach**|**MAE**|**RMSE**|**R²**|**IA**|**SDE**|**MAPE**|
+|---|--:|--:|--:|--:|--:|--:|
+|**Direct LSTM**|231.81|375.24|0.9261|0.9805|374.72|288.02|
+|**Indirect (LSTM → RF)**|429.12|720.31|0.7278|0.9170|711.10|1017.82|
+
+> 📌 **Insight**: The Direct LSTM approach outperforms the Indirect method in all evaluation metrics on the test set, particularly in RMSE and MAPE.

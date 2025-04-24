@@ -1,23 +1,21 @@
-# requirements.txt
+# filename: project/requirements.txt
+# Core libraries for data handling, numerical operations, and machine learning
+pandas
+numpy
+scikit-learn # Includes joblib, essential for RandomForest
+tensorflow
+statsmodels # For ACF/PACF plots
 
-# Core libraries
-pandas>=1.5.0,<3.0.0
-numpy>=1.21.0,<2.0.0
-scikit-learn>=1.1.0,<2.0.0
+# Explicitly list joblib for clarity, though often included with scikit-learn
+joblib
 
-# Deep Learning
-# Specify either tensorflow or tensorflow-cpu based on your setup
-tensorflow>=2.10.0,<2.17.0
-# tensorflow-cpu>=2.10.0,<2.17.0
-# Remove one of the above lines depending on GPU availability
+# Libraries for plotting and visualization
+matplotlib
+seaborn
 
-# Plotting
-matplotlib>=3.5.0,<4.0.0
-seaborn>=0.12.0,<0.15.0
+# Utility for progress bars
+tqdm
 
-# Jupyter environment (if running notebooks)
-jupyterlab>=3.0.0,<5.0.0
-ipykernel>=6.15.0,<7.0.0
-
-# Note: You can freeze your environment's exact versions using 'pip freeze > requirements.txt'
-# after installing these base packages.
+# Optional for notebook environment (if used)
+# jupyterlab
+# ipykernel
